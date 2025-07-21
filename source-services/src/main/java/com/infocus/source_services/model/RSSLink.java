@@ -3,10 +3,8 @@ package com.dev.sourceservice.model;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Entity
 @Getter
@@ -14,22 +12,20 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Table(name = "news_sources")
-public class NewsSource {
+@Table(name = "rss_links")
+public class RSSLink {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(unique = true, nullable = false, length = 100)
-    private String name;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "source_id")
+    private NewsSource source;
+
+    @Column(nullable = false)
+    private String url;
 
     @CreationTimestamp
     private LocalDateTime createdAt;
-
-    @UpdateTimestamp
-    private LocalDateTime updatedAt;
-
-    @OneToMany(mappedBy = "source", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<RSSLink> links;
 }
