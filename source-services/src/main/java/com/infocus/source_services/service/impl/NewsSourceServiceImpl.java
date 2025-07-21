@@ -22,10 +22,11 @@ public class NewsSourceServiceImpl implements NewsSourceService {
     private final NewsSourceRepository newsSourceRepository;
     private final RSSLinkRepository rssLinkRepository;
 
+    @Override
     @Transactional
     public NewsSourceResponseDTO addSource(NewsSourceDTO dto) {
         if (newsSourceRepository.existsByName(dto.getName())) {
-            throw new IllegalArgumentException("Source already exists");
+            throw new IllegalArgumentException("A source with this name already exists.");
         }
 
         NewsSource source = NewsSource.builder()
@@ -36,37 +37,52 @@ public class NewsSourceServiceImpl implements NewsSourceService {
 
         List<RSSLink> links = dto.getLinks().stream()
                 .filter(url -> !url.isBlank())
-                .map(url -> RSSLink.builder().source(source).url(url).build())
+                .map(url -> RSSLink.builder()
+                        .source(source)
+                        .url(url)
+                        .build())
                 .collect(Collectors.toList());
 
         rssLinkRepository.saveAll(links);
-        source.setLinks(links);
+        source.setLinks(links); // if you want to reflect them in response
 
         return mapToResponseDTO(source);
     }
 
+    @Override
     public List<NewsSourceResponseDTO> getAllSources() {
         return newsSourceRepository.findAll().stream()
                 .map(this::mapToResponseDTO)
                 .collect(Collectors.toList());
     }
 
+    @Override
     @Transactional
     public NewsSourceResponseDTO updateSource(Long id, NewsSourceDTO dto) {
         NewsSource source = newsSourceRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Source not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Source with ID " + id + " not found."));
 
+        // Name uniqueness validation
         if (!source.getName().equals(dto.getName()) && newsSourceRepository.existsByName(dto.getName())) {
-            throw new IllegalArgumentException("Source name already in use");
+            throw new IllegalArgumentException("Another source with this name already exists.");
         }
 
+        // Update name
         source.setName(dto.getName());
-        source.getLinks().clear();
-        rssLinkRepository.deleteAll(source.getLinks());
 
+        // Delete existing links
+        List<RSSLink> oldLinks = source.getLinks();
+        if (oldLinks != null && !oldLinks.isEmpty()) {
+            rssLinkRepository.deleteAll(oldLinks);
+        }
+
+        // Save new links
         List<RSSLink> newLinks = dto.getLinks().stream()
                 .filter(url -> !url.isBlank())
-                .map(url -> RSSLink.builder().source(source).url(url).build())
+                .map(url -> RSSLink.builder()
+                        .source(source)
+                        .url(url)
+                        .build())
                 .collect(Collectors.toList());
 
         rssLinkRepository.saveAll(newLinks);
@@ -75,10 +91,11 @@ public class NewsSourceServiceImpl implements NewsSourceService {
         return mapToResponseDTO(newsSourceRepository.save(source));
     }
 
+    @Override
     @Transactional
     public void deleteSource(Long id) {
         NewsSource source = newsSourceRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Source not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Source with ID " + id + " not found."));
         newsSourceRepository.delete(source);
     }
 
@@ -86,7 +103,9 @@ public class NewsSourceServiceImpl implements NewsSourceService {
         return NewsSourceResponseDTO.builder()
                 .id(source.getId())
                 .name(source.getName())
-                .links(source.getLinks().stream().map(RSSLink::getUrl).toList())
+                .links(source.getLinks().stream()
+                        .map(RSSLink::getUrl)
+                        .toList())
                 .build();
     }
 }
