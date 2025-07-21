@@ -1,4 +1,4 @@
-package com.dev.sourceservice.model;
+package com.infocus.source_services.model;
 
 import jakarta.persistence.*;
 import lombok.*;

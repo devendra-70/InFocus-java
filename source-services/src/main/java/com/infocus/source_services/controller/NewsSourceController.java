@@ -1,4 +1,4 @@
-package com.dev.sourceservice.controller;
+package com.infocus.source_services.controller;
 
 import com.dev.sourceservice.dto.NewsSourceDTO;
 import com.dev.sourceservice.dto.NewsSourceResponseDTO;

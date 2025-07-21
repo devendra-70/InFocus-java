@@ -1,7 +1,7 @@
-package com.source.config;
+package com.infocus.source_services.config;
 
 import com.infocus.source_services.model.RssFeed;
-import com.source.repository.RssFeedRepository;
+import com.infocus.source_services.repository.RssFeedRepository;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;

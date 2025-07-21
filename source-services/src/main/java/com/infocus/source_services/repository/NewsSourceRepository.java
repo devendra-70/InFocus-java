@@ -1,4 +1,4 @@
-package com.dev.sourceservice.repository;
+package com.infocus.source_services.repository;
 
 import com.dev.sourceservice.model.NewsSource;
 import org.springframework.data.jpa.repository.JpaRepository;

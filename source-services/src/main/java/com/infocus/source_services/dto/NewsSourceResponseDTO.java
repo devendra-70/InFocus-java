@@ -1,4 +1,4 @@
-package com.dev.sourceservice.dto;
+package com.infocus.source_services.dto;
 
 import lombok.Builder;
 import lombok.Data;
