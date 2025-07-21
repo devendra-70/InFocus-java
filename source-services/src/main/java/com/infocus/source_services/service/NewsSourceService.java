@@ -1,7 +1,7 @@
-package com.dev.sourceservice.service;
+package com.infocus.source_services.service;
 
-import com.dev.sourceservice.dto.NewsSourceDTO;
-import com.dev.sourceservice.dto.NewsSourceResponseDTO;
+import com.infocus.source_services.dto.NewsSourceDTO;
+import com.infocus.source_services.dto.NewsSourceResponseDTO;
 
 import java.util.List;
 

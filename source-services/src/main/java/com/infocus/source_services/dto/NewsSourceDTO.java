@@ -6,6 +6,9 @@ import lombok.NoArgsConstructor;
 
 import java.util.List;
 
+/**
+ * DTO for receiving a news source with its RSS links.
+ */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

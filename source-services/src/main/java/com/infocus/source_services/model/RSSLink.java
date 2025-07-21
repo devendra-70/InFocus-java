@@ -27,6 +27,6 @@ public class RSSLink {
     private String url;
 
     @CreationTimestamp
-    @Column(updatable = false)
+    @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
 }

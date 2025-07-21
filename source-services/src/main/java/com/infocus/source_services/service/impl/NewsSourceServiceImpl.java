@@ -1,13 +1,13 @@
-package com.dev.sourceservice.service.impl;
+package com.infocus.source_services.service.impl;
 
-import com.dev.sourceservice.dto.NewsSourceDTO;
-import com.dev.sourceservice.dto.NewsSourceResponseDTO;
-import com.dev.sourceservice.exception.ResourceNotFoundException;
-import com.dev.sourceservice.model.NewsSource;
-import com.dev.sourceservice.model.RSSLink;
-import com.dev.sourceservice.repository.NewsSourceRepository;
-import com.dev.sourceservice.repository.RSSLinkRepository;
-import com.dev.sourceservice.service.NewsSourceService;
+import com.infocus.source_services.dto.NewsSourceDTO;
+import com.infocus.source_services.dto.NewsSourceResponseDTO;
+import com.infocus.source_services.exception.ResourceNotFoundException;
+import com.infocus.source_services.model.NewsSource;
+import com.infocus.source_services.model.RSSLink;
+import com.infocus.source_services.repository.NewsSourceRepository;
+import com.infocus.source_services.repository.RSSLinkRepository;
+import com.infocus.source_services.service.NewsSourceService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -44,7 +44,7 @@ public class NewsSourceServiceImpl implements NewsSourceService {
                 .collect(Collectors.toList());
 
         rssLinkRepository.saveAll(links);
-        source.setLinks(links); // if you want to reflect them in response
+        source.setLinks(links);
 
         return mapToResponseDTO(source);
     }
@@ -62,50 +62,12 @@ public class NewsSourceServiceImpl implements NewsSourceService {
         NewsSource source = newsSourceRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Source with ID " + id + " not found."));
 
-        // Name uniqueness validation
         if (!source.getName().equals(dto.getName()) && newsSourceRepository.existsByName(dto.getName())) {
             throw new IllegalArgumentException("Another source with this name already exists.");
         }
 
-        // Update name
         source.setName(dto.getName());
 
-        // Delete existing links
         List<RSSLink> oldLinks = source.getLinks();
         if (oldLinks != null && !oldLinks.isEmpty()) {
             rssLinkRepository.deleteAll(oldLinks);
-        }
-
-        // Save new links
-        List<RSSLink> newLinks = dto.getLinks().stream()
-                .filter(url -> !url.isBlank())
-                .map(url -> RSSLink.builder()
-                        .source(source)
-                        .url(url)
-                        .build())
-                .collect(Collectors.toList());
-
-        rssLinkRepository.saveAll(newLinks);
-        source.setLinks(newLinks);
-
-        return mapToResponseDTO(newsSourceRepository.save(source));
-    }
-
-    @Override
-    @Transactional
-    public void deleteSource(Long id) {
-        NewsSource source = newsSourceRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Source with ID " + id + " not found."));
-        newsSourceRepository.delete(source);
-    }
-
-    private NewsSourceResponseDTO mapToResponseDTO(NewsSource source) {
-        return NewsSourceResponseDTO.builder()
-                .id(source.getId())
-                .name(source.getName())
-                .links(source.getLinks().stream()
-                        .map(RSSLink::getUrl)
-                        .toList())
-                .build();
-    }
-}

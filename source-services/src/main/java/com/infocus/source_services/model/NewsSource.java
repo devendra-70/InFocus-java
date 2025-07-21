@@ -26,7 +26,7 @@ public class NewsSource {
     private String name;
 
     @CreationTimestamp
-    @Column(updatable = false, nullable = false)
+    @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
     @UpdateTimestamp
