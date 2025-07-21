@@ -1,8 +1,8 @@
 package com.infocus.source_services.controller;
 
-import com.dev.sourceservice.dto.NewsSourceDTO;
-import com.dev.sourceservice.dto.NewsSourceResponseDTO;
-import com.dev.sourceservice.service.NewsSourceService;
+import com.infocus.source_services.dto.NewsSourceDTO;
+import com.infocus.source_services.dto.NewsSourceResponseDTO;
+import com.infocus.source_services.service.NewsSourceService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
