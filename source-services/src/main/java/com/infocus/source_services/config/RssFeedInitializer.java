@@ -1,6 +1,6 @@
 package com.source.config;
 
-import com.source.entity.RssFeed;
+import com.infocus.source_services.model.RssFeed;
 import com.source.repository.RssFeedRepository;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
@@ -8,7 +8,6 @@ import org.springframework.stereotype.Component;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
-import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
